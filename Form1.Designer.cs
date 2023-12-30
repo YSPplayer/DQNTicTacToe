@@ -36,6 +36,8 @@ namespace TicTacToe
 			this.labelOutMessage = new System.Windows.Forms.Label();
 			this.labelTurn = new System.Windows.Forms.Label();
 			this.labelTurnNumber = new System.Windows.Forms.Label();
+			this.radioDoubleAi = new System.Windows.Forms.RadioButton();
+			this.buttonReset = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// buttonStart
@@ -58,6 +60,7 @@ namespace TicTacToe
 			this.radioPlayer.TabStop = true;
 			this.radioPlayer.Text = "双人";
 			this.radioPlayer.UseVisualStyleBackColor = true;
+			this.radioPlayer.CheckedChanged += new System.EventHandler(this.radioPlayer_CheckedChanged);
 			// 
 			// radioAi
 			// 
@@ -69,6 +72,7 @@ namespace TicTacToe
 			this.radioAi.TabStop = true;
 			this.radioAi.Text = "ai";
 			this.radioAi.UseVisualStyleBackColor = true;
+			this.radioAi.CheckedChanged += new System.EventHandler(this.radioAi_CheckedChanged);
 			// 
 			// labelTitle
 			// 
@@ -106,12 +110,36 @@ namespace TicTacToe
 			this.labelTurnNumber.TabIndex = 7;
 			this.labelTurnNumber.Text = "1";
 			// 
+			// radioDoubleAi
+			// 
+			this.radioDoubleAi.AutoSize = true;
+			this.radioDoubleAi.Location = new System.Drawing.Point(495, 45);
+			this.radioDoubleAi.Name = "radioDoubleAi";
+			this.radioDoubleAi.Size = new System.Drawing.Size(47, 16);
+			this.radioDoubleAi.TabIndex = 8;
+			this.radioDoubleAi.TabStop = true;
+			this.radioDoubleAi.Text = "双ai";
+			this.radioDoubleAi.UseVisualStyleBackColor = true;
+			this.radioDoubleAi.CheckedChanged += new System.EventHandler(this.radioDoubleAi_CheckedChanged);
+			// 
+			// buttonReset
+			// 
+			this.buttonReset.Location = new System.Drawing.Point(155, 30);
+			this.buttonReset.Name = "buttonReset";
+			this.buttonReset.Size = new System.Drawing.Size(89, 32);
+			this.buttonReset.TabIndex = 9;
+			this.buttonReset.Text = "重置";
+			this.buttonReset.UseVisualStyleBackColor = true;
+			this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ActiveCaption;
 			this.ClientSize = new System.Drawing.Size(784, 761);
+			this.Controls.Add(this.buttonReset);
+			this.Controls.Add(this.radioDoubleAi);
 			this.Controls.Add(this.labelTurnNumber);
 			this.Controls.Add(this.labelTurn);
 			this.Controls.Add(this.labelOutMessage);
@@ -121,6 +149,7 @@ namespace TicTacToe
 			this.Controls.Add(this.buttonStart);
 			this.Name = "Form1";
 			this.Text = "Form1";
+			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -135,6 +164,8 @@ namespace TicTacToe
 		private System.Windows.Forms.Label labelOutMessage;
 		private System.Windows.Forms.Label labelTurn;
 		private System.Windows.Forms.Label labelTurnNumber;
+		private System.Windows.Forms.RadioButton radioDoubleAi;
+		private System.Windows.Forms.Button buttonReset;
 	}
 }
 

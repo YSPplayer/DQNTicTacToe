@@ -16,6 +16,9 @@ namespace TicTacToe.GameUI
 		public static CPictureBox[,] pictureBoxes;
 		public static Label labelOutMessage;
 		public static Label labelTurnNumber;
+		public static RadioButton radioPlayer;
+		public static RadioButton radioDoubleAi;
+		public static RadioButton radioAi;
 		//游戏是否开始
 		private static bool isGame;
 		static UImanage()
@@ -24,15 +27,6 @@ namespace TicTacToe.GameUI
 			//创建4*4的数组，初始索引处的值为null
 			pictureBoxes = new CPictureBox[MAX, MAX];
 			isGame = false;
-		}
-
-		/// <summary>
-		/// 获取当前落子的格子位置，传入core检查
-		/// </summary>
-		/// <returns></returns>
-		private static Location GetPieceLocation(CPictureBox pictureBox)
-		{
-			return new Location(pictureBox.GameX, pictureBox.GameY);
 		}
 
 		/// <summary>
@@ -60,8 +54,8 @@ namespace TicTacToe.GameUI
 		/// </summary>
 		public static void PlaceChessPiece(CPictureBox pictureBox)
 		{
-			//不在游戏中或者当前位置已经有棋子不触发
-			if (!isGame || CheckPieceError(pictureBox)) return;
+			//不在游戏中或者当前玩家是ai或者当前位置已经有棋子不触发
+			if (!isGame || Game.IsAi() || CheckPieceError(pictureBox)) return;
 			//落子
 			DropPiece(Game.GetTurnPlayer(), pictureBox);
 			//更新环境
@@ -77,6 +71,8 @@ namespace TicTacToe.GameUI
 				//进入下一轮游戏
 				int turn = Game.GetCurrentTurn();
 				labelTurnNumber.Text = turn.ToString();
+				//人机模式
+				if (Game.GetGameMode() != Mode.PVP && Game.IsAi()) DropAiPiece();
 			}
 			else if (player == Player.All)
 			{
@@ -90,8 +86,32 @@ namespace TicTacToe.GameUI
 				labelOutMessage.Text = player == Player.White ? Tag.winWhite : Tag.winBlack;
 				//重置游戏
 				isGame = false;
+				//重置我们的button
+				radioAi.Enabled = true;
+				radioDoubleAi.Enabled = true;
+				radioPlayer.Enabled = true;
 			}
-			
+		}
+
+		public static void SetGameMode(object sender)
+		{
+			RadioButton radio = sender as RadioButton;
+			if (!radio.Checked) return;//radio被点击触发，没有点击的不触发该事件。
+			if (radio == radioPlayer) Game.SetGameMode(Mode.PVP);
+			else if (radio == radioAi) Game.SetGameMode(Mode.PVE);
+			else if (radio == radioDoubleAi) Game.SetGameMode(Mode.EVE);
+		}
+		/// <summary>
+		/// ai下棋
+		/// </summary>
+		private static void DropAiPiece()
+		{
+			//如果是EVE ai就下慢一点，在非模型的拟合下执行如下操作
+			//if (Game.GetGameMode() == Mode.EVE); // 500秒;
+			Location location = Game.DropAiPiece();	
+			SetPieceImage(Game.GetTurnPlayer(),pictureBoxes[location.x,location.y]);
+			//更新环境
+			UpDateTurn();
 		}
 
 		/// <summary>
@@ -138,8 +158,14 @@ namespace TicTacToe.GameUI
 			ResetScene();
 			isGame = true;
 			labelOutMessage.Text = Tag.start;
+			//设置游戏修改组件不可用
+			radioAi.Enabled = false;
+			radioDoubleAi.Enabled = false;
+			radioPlayer.Enabled = false;
 			//初始化游戏逻辑数据
 			Game.StartGame();
+			//ai就开始下棋
+			if (Game.IsAi()) DropAiPiece();
 		}
 
 		/// <summary>

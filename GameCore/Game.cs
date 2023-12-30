@@ -2,9 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 namespace TicTacToe.GameCore
 {
+	/// <summary>
+	/// 游戏模式
+	/// </summary>
+	public enum Mode
+	{ 
+		PVP,//双人模式
+		PVE,//人机模式
+		EVE,//人机观战模式
+	}
 	public enum Player 
 	{ 
 		None,//未开始游戏
@@ -32,10 +40,54 @@ namespace TicTacToe.GameCore
 		//对UI界面的内核逻辑映射
 		//0表示空区域，-1表示黑棋，1表示白旗
 		private static int[,] gameSquares;
+		private static bool isAi;//检查当前玩家是否为ai
+		//游戏模式
+		private static Mode Mode;
+		//随机数种子
+		private static Random random;
+		//方便取随机数的x,y坐标数组
+		private static List<Location> locations;
 		static Game() 
 		{
+			locations = new List<Location>();
 			gameSquares = new int[MAX, MAX];
+			random = new Random();
 			ClearGame();
+		}
+
+		/// <summary>
+		/// 设置玩家的先后游戏顺序
+		/// </summary>
+		private static void SetFirst()
+		{
+			if (Mode == Mode.PVE)
+			{
+				int number = random.Next(0, 2); // 生成0或1的随机数
+				isAi = number == 0 ? true : false;
+			}
+			else
+			{
+				//EVE模式，总是true
+				isAi = true;
+			}
+		}
+		public static bool IsAi()
+		{
+			return isAi;
+		}
+
+		public static void RemoveLocation(Location location)
+		{
+			for (int i = 0; i < locations.Count; i++)
+			{
+				Location loc = locations[i];
+				if (location.x == loc.x && location.y == loc.y)
+				{
+					//移除掉当前元素
+					locations.RemoveAt(i);
+					break;
+				}
+			}
 		}
 
 		/// <summary>
@@ -45,6 +97,8 @@ namespace TicTacToe.GameCore
 		{
 			if (currentPlayer == Player.None) return;
 			currentPlayer = currentPlayer == Player.White ? Player.Black : Player.White;
+			//ai模式下设置人机和玩家的攻击顺序
+			if (Mode == Mode.PVE) isAi = isAi ? false : true;
 			return;
 		}
 
@@ -57,12 +111,29 @@ namespace TicTacToe.GameCore
 		}
 
 		/// <summary>
+		/// 设置游戏模式
+		/// </summary>
+		public static void SetGameMode(Mode mode)
+		{
+			Mode = mode;
+		}
+		/// <summary>
+		/// 获取游戏模式
+		/// </summary>
+		public static Mode GetGameMode()
+		{
+			return Mode;
+		}
+
+
+		/// <summary>
 		/// 清除游戏
 		/// </summary>
 		public static void ClearGame()
 		{
 			turn = 0;
 			currentPlayer = Player.None;
+			isAi = false;
 			ClearGameSquares();
 		}
 
@@ -71,12 +142,16 @@ namespace TicTacToe.GameCore
 		/// </summary>
 		private static void ClearGameSquares() 
 		{
+			//重置loctions坐标
+			locations.Clear();
 			for (int i = 0; i < gameSquares.GetLength(0); i++)
 			{
 				for (int j = 0; j < gameSquares.GetLength(1); j++)
 				{
 					//重置游戏逻辑
 					gameSquares[i, j] = 0;
+					//存储位置数组，ai会调用
+					locations.Add(new Location(i,j));
 				}
 			}
 		}
@@ -99,6 +174,22 @@ namespace TicTacToe.GameCore
 		public static void DropPiece(Player player, Location location)
 		{
 			gameSquares[location.x, location.y]  = player == Player.White ? 1 : -1;
+			//落子后这个位置坐标就不能用了，同时移除掉对应的坐标
+			RemoveLocation(location);
+		}
+
+		/// <summary>
+		/// ai下棋
+		/// </summary>
+		public static Location DropAiPiece() 
+		{
+			int index = random.Next(0, locations.Count);
+			if (index >= locations.Count || index < 0) index = 0;
+			//获取到随机索引值
+			Location loc = locations[index];
+			DropPiece(currentPlayer, loc);
+			//返回我们的位置，因为我们要渲染对应索引的组件
+			return loc;
 		}
 
 		/// <summary>
@@ -203,8 +294,11 @@ namespace TicTacToe.GameCore
 			turn = 0;
 			//白棋先攻
 			currentPlayer = Player.White;
+			//有ai，就是人机模式，加入人机
+			if (Mode != Mode.PVP) SetFirst();
 		}
 
+		
 
 	}
 }

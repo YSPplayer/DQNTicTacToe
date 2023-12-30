@@ -32,9 +32,14 @@ namespace TicTacToe
 		}
 		public void UIManageInit()
 		{
-			//存储组件对象
-	 	   UImanage.labelOutMessage = labelOutMessage;
+		   //设置我们的radiobutton
+		   radioPlayer.Checked = true;
+		   //存储组件对象
+		   UImanage.labelOutMessage = labelOutMessage;
 		   UImanage.labelTurnNumber = labelTurnNumber;
+		   UImanage.radioPlayer = radioPlayer;
+		   UImanage.radioDoubleAi = radioDoubleAi;
+		   UImanage.radioAi = radioAi;
 		}
 		/// <summary>
 		/// 初始化游戏盘
@@ -76,6 +81,34 @@ namespace TicTacToe
 		private void buttonStart_Click(object sender, EventArgs e)
 		{
 			UImanage.StartGame();
+		}
+
+		private void Form1_Load(object sender, EventArgs e)
+		{
+		}
+
+		private void radioAi_CheckedChanged(object sender, EventArgs e)
+		{
+			UImanage.SetGameMode(sender);
+		}
+
+		private void radioPlayer_CheckedChanged(object sender, EventArgs e)
+		{
+			UImanage.SetGameMode(sender);
+		}
+
+		private void radioDoubleAi_CheckedChanged(object sender, EventArgs e)
+		{
+			UImanage.SetGameMode(sender);
+		}
+
+		private void buttonReset_Click(object sender, EventArgs e)
+		{
+			UImanage.ResetScene();
+			//设置游戏修改组件可用
+			radioAi.Enabled = true;
+			radioDoubleAi.Enabled = true;
+			radioPlayer.Enabled = true;
 		}
 	}
 }
