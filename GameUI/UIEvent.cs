@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
+using TicTacToe.CustomControl;
 namespace TicTacToe.GameUI
 {
 	static class UIEvent {
@@ -15,7 +16,7 @@ namespace TicTacToe.GameUI
 		/// <param name="e"></param>
 		public static void PictureBoxPaint(object sender, PaintEventArgs e)
 		{
-			PictureBox currentPictureBox = sender as PictureBox;
+			CPictureBox currentPictureBox = sender as CPictureBox;
 			if (currentPictureBox == null) return;
 			// 获取PictureBox的Graphics对象
 			Graphics g = e.Graphics;
@@ -30,5 +31,17 @@ namespace TicTacToe.GameUI
 			// 释放资源
 			borderPen.Dispose();
 		}
+
+		/// <summary>
+		/// 格子的点击事件 
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		public static void PictureBoxClick(object sender, EventArgs e) 
+		{
+			CPictureBox currentPictureBox = sender as CPictureBox;
+			UImanage.PlaceChessPiece(currentPictureBox);
+		}
+
 	}
 }

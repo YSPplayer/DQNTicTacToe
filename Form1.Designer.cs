@@ -30,11 +30,12 @@ namespace TicTacToe
 		private void InitializeComponent()
 		{
 			this.buttonStart = new System.Windows.Forms.Button();
-			this.buttonReset = new System.Windows.Forms.Button();
 			this.radioPlayer = new System.Windows.Forms.RadioButton();
 			this.radioAi = new System.Windows.Forms.RadioButton();
 			this.labelTitle = new System.Windows.Forms.Label();
 			this.labelOutMessage = new System.Windows.Forms.Label();
+			this.labelTurn = new System.Windows.Forms.Label();
+			this.labelTurnNumber = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// buttonStart
@@ -45,15 +46,7 @@ namespace TicTacToe
 			this.buttonStart.TabIndex = 0;
 			this.buttonStart.Text = "开始";
 			this.buttonStart.UseVisualStyleBackColor = true;
-			// 
-			// buttonReset
-			// 
-			this.buttonReset.Location = new System.Drawing.Point(161, 30);
-			this.buttonReset.Name = "buttonReset";
-			this.buttonReset.Size = new System.Drawing.Size(89, 32);
-			this.buttonReset.TabIndex = 1;
-			this.buttonReset.Text = "重置";
-			this.buttonReset.UseVisualStyleBackColor = true;
+			this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
 			// 
 			// radioPlayer
 			// 
@@ -95,21 +88,39 @@ namespace TicTacToe
 			this.labelOutMessage.TabIndex = 5;
 			this.labelOutMessage.Text = "黑棋胜利";
 			// 
+			// labelTurn
+			// 
+			this.labelTurn.AutoSize = true;
+			this.labelTurn.Location = new System.Drawing.Point(28, 118);
+			this.labelTurn.Name = "labelTurn";
+			this.labelTurn.Size = new System.Drawing.Size(53, 12);
+			this.labelTurn.TabIndex = 6;
+			this.labelTurn.Text = "回合数：";
+			// 
+			// labelTurnNumber
+			// 
+			this.labelTurnNumber.AutoSize = true;
+			this.labelTurnNumber.Location = new System.Drawing.Point(77, 118);
+			this.labelTurnNumber.Name = "labelTurnNumber";
+			this.labelTurnNumber.Size = new System.Drawing.Size(11, 12);
+			this.labelTurnNumber.TabIndex = 7;
+			this.labelTurnNumber.Text = "1";
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ActiveCaption;
 			this.ClientSize = new System.Drawing.Size(784, 761);
+			this.Controls.Add(this.labelTurnNumber);
+			this.Controls.Add(this.labelTurn);
 			this.Controls.Add(this.labelOutMessage);
 			this.Controls.Add(this.labelTitle);
 			this.Controls.Add(this.radioAi);
 			this.Controls.Add(this.radioPlayer);
-			this.Controls.Add(this.buttonReset);
 			this.Controls.Add(this.buttonStart);
 			this.Name = "Form1";
 			this.Text = "Form1";
-			this.Load += new System.EventHandler(this.Form1_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -118,11 +129,12 @@ namespace TicTacToe
 		#endregion
 
 		private System.Windows.Forms.Button buttonStart;
-		private System.Windows.Forms.Button buttonReset;
 		private System.Windows.Forms.RadioButton radioPlayer;
 		private System.Windows.Forms.RadioButton radioAi;
 		private System.Windows.Forms.Label labelTitle;
 		private System.Windows.Forms.Label labelOutMessage;
+		private System.Windows.Forms.Label labelTurn;
+		private System.Windows.Forms.Label labelTurnNumber;
 	}
 }
 
