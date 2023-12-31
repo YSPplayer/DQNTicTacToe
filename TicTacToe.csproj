@@ -66,6 +66,9 @@
     <Compile Include="CustomControl\CPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DQN\Raw.cs" />
+    <Compile Include="DQN\TrainManage.cs" />
+    <Compile Include="Enum\EnumManage.cs" />
     <Compile Include="GameCore\Game.cs" />
     <Compile Include="GameUI\Tag.cs" />
     <Compile Include="GameUI\UIEvent.cs" />
@@ -75,7 +78,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameUI\UImanage.cs" />
+    <Compile Include="GameUI\UIManage.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

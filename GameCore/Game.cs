@@ -1,35 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using TicTacToe.Enum;
+using TicTacToe.DQN;
+using System.Windows.Forms;
 namespace TicTacToe.GameCore
 {
-	/// <summary>
-	/// 游戏模式
-	/// </summary>
-	public enum Mode
-	{ 
-		PVP,//双人模式
-		PVE,//人机模式
-		EVE,//人机观战模式
-	}
-	public enum Player 
-	{ 
-		None,//未开始游戏
-		White,//黑棋
-		Black,//白旗
-		All,//和局
-	}
-	struct Location
-	{
-		public int x;
-		public int y;
-		public Location(int x, int y)
-		{
-			this.x = x;
-			this.y = y;
-		}
-	}
 	static class Game
 	{
 		public const int MAX = 6;
@@ -135,6 +111,22 @@ namespace TicTacToe.GameCore
 			currentPlayer = Player.None;
 			isAi = false;
 			ClearGameSquares();
+			TrainManage.Clear();
+		}
+		/// <summary>
+		/// 拷贝当前的环境
+		/// </summary>
+		private static void CopyS(int[,] s)
+		{
+			int rows = gameSquares.GetLength(0);
+			int cols = gameSquares.GetLength(1);
+			for (int i = 0; i < rows; i++)
+			{
+				for (int j = 0; j < cols; j++)
+				{
+					s[i, j] = gameSquares[i, j];
+				}
+			}
 		}
 
 		/// <summary>
@@ -173,7 +165,14 @@ namespace TicTacToe.GameCore
 		/// </summary>
 		public static void DropPiece(Player player, Location location)
 		{
+			//记录落子前的环境s
+			CopyS(TrainManage.s);
 			gameSquares[location.x, location.y]  = player == Player.White ? 1 : -1;
+			//记录落子的行为action
+			TrainManage.dropLocation = new Location(location.x, location.y);
+			TrainManage.player = player;
+			//记录落子后的环境s1
+			CopyS(TrainManage.s1);
 			//落子后这个位置坐标就不能用了，同时移除掉对应的坐标
 			RemoveLocation(location);
 		}
@@ -204,14 +203,22 @@ namespace TicTacToe.GameCore
 			{
 				++turn;
 				//如果没有空的位置，和局
-				if (turn >= MAX * MAX) return Player.All;
+				if (turn >= MAX * MAX) 
+				{
+					//在这个地方获取奖励函数
+					//TrainManage.GetReward(Player.All);
+					MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.All));
+					return Player.All;
+				}
 				SetNextPlayer();
+				//TrainManage.GetReward(Player.None);
+				MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.None));
 				return Player.None;
 			}
 			else
 			{
-				//游戏结束
-
+				//TrainManage.GetReward(currentPlayer);
+				MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(currentPlayer));
 				return currentPlayer;
 			}
 		}

@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using TicTacToe.GameCore;
+using TicTacToe.Enum;
 using TicTacToe.CustomControl;
 using System.Drawing;
 using System.Drawing.Imaging;
-
 namespace TicTacToe.GameUI
 {
-	class UImanage
+	class UIManage
 	{
 		public static int MAX;
 		public static CPictureBox[,] pictureBoxes;
@@ -21,7 +20,7 @@ namespace TicTacToe.GameUI
 		public static RadioButton radioAi;
 		//游戏是否开始
 		private static bool isGame;
-		static UImanage()
+		static UIManage()
 		{
 			MAX = Game.MAX;
 			//创建4*4的数组，初始索引处的值为null

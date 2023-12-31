@@ -40,7 +40,7 @@ namespace TicTacToe.GameUI
 		public static void PictureBoxClick(object sender, EventArgs e) 
 		{
 			CPictureBox currentPictureBox = sender as CPictureBox;
-			UImanage.PlaceChessPiece(currentPictureBox);
+			UIManage.PlaceChessPiece(currentPictureBox);
 		}
 
 	}

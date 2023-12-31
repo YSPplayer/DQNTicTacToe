@@ -28,18 +28,18 @@ namespace TicTacToe
 			//添加引用
 			UIManageInit();
 			//重置场景
-			UImanage.ResetScene();
+			UIManage.ResetScene();
 		}
 		public void UIManageInit()
 		{
 		   //设置我们的radiobutton
 		   radioPlayer.Checked = true;
 		   //存储组件对象
-		   UImanage.labelOutMessage = labelOutMessage;
-		   UImanage.labelTurnNumber = labelTurnNumber;
-		   UImanage.radioPlayer = radioPlayer;
-		   UImanage.radioDoubleAi = radioDoubleAi;
-		   UImanage.radioAi = radioAi;
+		   UIManage.labelOutMessage = labelOutMessage;
+		   UIManage.labelTurnNumber = labelTurnNumber;
+		   UIManage.radioPlayer = radioPlayer;
+		   UIManage.radioDoubleAi = radioDoubleAi;
+		   UIManage.radioAi = radioAi;
 		}
 		/// <summary>
 		/// 初始化游戏盘
@@ -49,8 +49,8 @@ namespace TicTacToe
 			int startX = 100; // 初始X坐标
 			int startY = 130; // 初始Y坐标
 			int size = 100; // PictureBox大小
-			int rows = UImanage.MAX; // 行数
-			int columns = UImanage.MAX; // 列数
+			int rows = UIManage.MAX; // 行数
+			int columns = UIManage.MAX; // 列数
 
 			for (int i = 0; i < rows; i++)
 			{
@@ -65,7 +65,7 @@ namespace TicTacToe
 					//添加点击事件
 					pictureBox.Click += UIEvent.PictureBoxClick;
 					//添加到数组中，方便管理
-					UImanage.pictureBoxes[i, j] = pictureBox;
+					UIManage.pictureBoxes[i, j] = pictureBox;
 					// 添加PictureBox到窗体
 					Controls.Add(pictureBox);
 
@@ -80,7 +80,7 @@ namespace TicTacToe
 		/// <param name="e"></param>
 		private void buttonStart_Click(object sender, EventArgs e)
 		{
-			UImanage.StartGame();
+			UIManage.StartGame();
 		}
 
 		private void Form1_Load(object sender, EventArgs e)
@@ -89,22 +89,22 @@ namespace TicTacToe
 
 		private void radioAi_CheckedChanged(object sender, EventArgs e)
 		{
-			UImanage.SetGameMode(sender);
+			UIManage.SetGameMode(sender);
 		}
 
 		private void radioPlayer_CheckedChanged(object sender, EventArgs e)
 		{
-			UImanage.SetGameMode(sender);
+			UIManage.SetGameMode(sender);
 		}
 
 		private void radioDoubleAi_CheckedChanged(object sender, EventArgs e)
 		{
-			UImanage.SetGameMode(sender);
+			UIManage.SetGameMode(sender);
 		}
 
 		private void buttonReset_Click(object sender, EventArgs e)
 		{
-			UImanage.ResetScene();
+			UIManage.ResetScene();
 			//设置游戏修改组件可用
 			radioAi.Enabled = true;
 			radioDoubleAi.Enabled = true;
