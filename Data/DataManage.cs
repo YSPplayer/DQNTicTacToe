@@ -14,11 +14,15 @@ namespace TicTacToe.Data
         public string S1 { get;private set; }
         public string Action { get; private set; }
         public int Value { get; private set; }
-        public Sample(string s1, string action, int value)
+        public int ActionCount { get; private set; }
+        public int End { get; private set; }
+        public Sample(string s1, string action, int value, int actionCount, int end)
         {
             S1 = s1;
             Action = action;
             Value = value;
+            ActionCount = actionCount;
+            End = end;
         }
     }
 	public class DataManage
@@ -76,11 +80,13 @@ namespace TicTacToe.Data
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     S1 TEXT,
                     Action TEXT,
-                    Value INTEGER
+                    Value INTEGER,
+                    ActionCount INTEGER,
+                    End INTEGER
                 );";
                 SQLiteCommand createTableCmd = new SQLiteCommand(executeCommand, conn);
                 createTableCmd.ExecuteNonQuery();//执行命令
-                List<Sample> samples = DataManage.SearchData();
+                //List<Sample> samples = DataManage.SearchData();
                 while (true)
                 {
                     lock (lockObject)
@@ -114,10 +120,12 @@ namespace TicTacToe.Data
         {
             using (SQLiteCommand cmd = new SQLiteCommand(conn))
             {
-                cmd.CommandText = "INSERT INTO sampleTable (S1, Action, Value) VALUES (@s1, @action, @value)";
+                cmd.CommandText = "INSERT INTO sampleTable (S1, Action, Value, ActionCount, End) VALUES (@s1, @action, @value, @actionCount, @end)";
                 cmd.Parameters.AddWithValue("@s1", sample.S1);
                 cmd.Parameters.AddWithValue("@action", sample.Action);
                 cmd.Parameters.AddWithValue("@value", sample.Value);
+                cmd.Parameters.AddWithValue("@actionCount", sample.ActionCount);
+                cmd.Parameters.AddWithValue("@end", sample.End);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -134,19 +142,21 @@ namespace TicTacToe.Data
                 {
                     while (reader.Read())
                     {
-                        Sample newSample = new Sample(reader["S1"].ToString(), reader["Action"].ToString(), Convert.ToInt32(reader["Value"]));
+                        Sample newSample = new Sample(reader["S1"].ToString(), reader["Action"].ToString(), Convert.ToInt32(reader["Value"]),
+                            Convert.ToInt32(reader["ActionCount"]), Convert.ToInt32(reader["End"]));
                         samples.Add(newSample);
                     }
                 }
             }
             return samples;
         }
-        public static void SavaData(int[,] outs, Location outDropLocation, int outValue)
+        public static void SavaData(int[,] outs, Location outDropLocation, int outValue,int actionCount,bool end)
 		{ 
             string s1 = ArrayToString(outs);
             string action = $"{outDropLocation.x},{outDropLocation.y}";
             int value = outValue;
-            SampleEnqueue(new Sample(s1, action, value));
+            int iend = end ? 1 : 0;
+            SampleEnqueue(new Sample(s1, action, value, actionCount, iend));
         }
 
         /// <summary>

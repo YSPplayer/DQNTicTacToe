@@ -145,14 +145,15 @@ namespace TicTacToe.GameCore
 		/// <summary>
 		/// 保存我们的样本数据
 		/// </summary>
-		private static void SaveSampleData(Player player)
+		private static void SaveSampleData(Player player,bool end)
 		{
 			if (!DQN) return;
 			int[,] s1 = new int[MAX, MAX];
 			Location dropLocation = new Location(-10,-10);
 			int reward = 0;
-			TrainManage.SetSampleParameters(player, s1, out dropLocation, out reward);
-			DataManage.SavaData(s1, dropLocation, reward);
+			int actionCount = 0;
+			TrainManage.SetSampleParameters(player, s1, out dropLocation, out reward,out actionCount);
+			DataManage.SavaData(s1, dropLocation, reward, actionCount,end);
 		}
 
 		/// <summary>
@@ -173,7 +174,7 @@ namespace TicTacToe.GameCore
 		public static void DropPiece(Player player, Location location)
 		{
 			//记录落子前的环境s
-			TrainManage.SetCurrentParameters(location,player,gameSquares);
+			TrainManage.SetCurrentParameters(location,player,gameSquares, locations.Count);
 			gameSquares[location.x, location.y]  = player == Player.White ? 1 : -1;
 			//记录落子后的环境s1
 			TrainManage.SetEndParameters(gameSquares);
@@ -213,18 +214,18 @@ namespace TicTacToe.GameCore
 
 
 					//在这个地方获取奖励函数
-					SaveSampleData(Player.All);
+					SaveSampleData(Player.All,true);
 					//MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.All));
 					return Player.All;
 				}
 				SetNextPlayer();
-				SaveSampleData(Player.None);
+				SaveSampleData(Player.None, false);
 				//MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.None));
 				return Player.None;
 			}
 			else
 			{
-				SaveSampleData(currentPlayer);
+				SaveSampleData(currentPlayer, true);
 				//MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(currentPlayer));
 				return currentPlayer;
 			}

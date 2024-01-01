@@ -17,6 +17,7 @@ namespace TicTacToe.DQN
 		private static Location dropLocation;
 		private static Player player;
 		public static int turn;
+		public static int actionCount;//游戏当前还有多少种可能的动作数量
 		static TrainManage()
 		{
 			Clear();
@@ -41,10 +42,11 @@ namespace TicTacToe.DQN
 		/// <summary>
 		/// 设置当前获取奖励函数需要的环境参数 
 		/// </summary>
-		public static void SetCurrentParameters(Location location,Player currentPlayer,int[,] gameSquares)
+		public static void SetCurrentParameters(Location location,Player currentPlayer,int[,] gameSquares,int aCount)
 		{
 			dropLocation = new Location(location.x, location.y);
 			player = currentPlayer;
+			actionCount = aCount;
 			CopyS(s, gameSquares);
 		}
 		public static void SetEndParameters(int[,] gameSquares)
@@ -59,6 +61,7 @@ namespace TicTacToe.DQN
 			s = new int[MAX, MAX];
 			s1 = new int[MAX, MAX];
 			turn = 0;
+			actionCount = 0;
 		}
 
 		/// <summary>
@@ -67,11 +70,12 @@ namespace TicTacToe.DQN
 		/// <param name="s1"></param>
 		/// <param name="dropLocation"></param>
 		/// <param name=""></param>
-		public static void SetSampleParameters(Player winPlayer,int[,] outs,out Location outDropLocation,out int outValue)
+		public static void SetSampleParameters(Player winPlayer,int[,] outs,out Location outDropLocation,out int outValue,out int aCount)
 		{
 			CopyS(outs, s1);
 			outDropLocation = new Location(dropLocation.x,dropLocation.y);
 			outValue = GetReward(winPlayer);
+			aCount = actionCount;
 		}
 
 		/*
