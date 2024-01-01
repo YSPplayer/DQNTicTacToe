@@ -336,8 +336,14 @@ namespace TicTacToe.DQN
 		{
 			//如果小于0说明我们这个是新的，直接返回就行
 			if (before.Count <= 0) return new List<TwoInARow>(current);
-			//说明旧的环境s状态下不存在这个元素，我们把它加入到我们的返回值里
-			List<TwoInARow> result = current.Except(before).ToList(); ;
+			List<TwoInARow> result = new List<TwoInARow>();
+			//这里因为before被过滤，所以我们的筛选逻辑就是before中没有的全部加进来
+			foreach (var row in current)
+			{
+				//说明before中存在这个元素，跳过
+				if (before.Count(brow => brow != null && brow.Equals(row)) > 0) continue;
+				result.Add(row);
+			}
 			return result;
 		}
 		public static List<TwoInARow> CheckForTwoInARow(int[,] s)

@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using TicTacToe.GameUI;
 using TicTacToe.CustomControl;
+using TicTacToe.Data;
 
 namespace TicTacToe
 {
@@ -17,8 +18,16 @@ namespace TicTacToe
 		{
 			InitializeComponent();
 			InitializeGameUI();
+			InitializeSQLite();
 		}
 
+		/// <summary>
+		/// 初始化本地数据库
+		/// </summary>
+		void InitializeSQLite()
+		{
+			DataManage.Start();
+		}
 		/// <summary>
 		/// 初始化游戏场景
 		/// </summary>
@@ -40,6 +49,7 @@ namespace TicTacToe
 		   UIManage.radioPlayer = radioPlayer;
 		   UIManage.radioDoubleAi = radioDoubleAi;
 		   UIManage.radioAi = radioAi;
+		   UIManage.checkBoxRecordSamples = checkBoxRecordSamples;
 		}
 		/// <summary>
 		/// 初始化游戏盘
@@ -106,9 +116,7 @@ namespace TicTacToe
 		{
 			UIManage.ResetScene();
 			//设置游戏修改组件可用
-			radioAi.Enabled = true;
-			radioDoubleAi.Enabled = true;
-			radioPlayer.Enabled = true;
+			UIManage.SetControlState(true);
 		}
 	}
 }

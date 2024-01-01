@@ -18,6 +18,7 @@ namespace TicTacToe.GameUI
 		public static RadioButton radioPlayer;
 		public static RadioButton radioDoubleAi;
 		public static RadioButton radioAi;
+		public static CheckBox checkBoxRecordSamples;
 		//游戏是否开始
 		private static bool isGame;
 		static UIManage()
@@ -44,6 +45,7 @@ namespace TicTacToe.GameUI
 			//重置文本
 			labelOutMessage.Text = Tag.noStart;
 			labelTurnNumber.Text = Tag.defaultTurn;
+			isGame = false;
 			//重置游戏数据
 			Game.ClearGame();
 		}
@@ -86,9 +88,7 @@ namespace TicTacToe.GameUI
 				//重置游戏
 				isGame = false;
 				//重置我们的button
-				radioAi.Enabled = true;
-				radioDoubleAi.Enabled = true;
-				radioPlayer.Enabled = true;
+				SetControlState(true);
 			}
 		}
 
@@ -148,6 +148,13 @@ namespace TicTacToe.GameUI
 			}
 			pictureBox.Image = bitmap;
 		}
+		public static void SetControlState(bool value)
+		{
+			radioAi.Enabled = value;
+			radioDoubleAi.Enabled = value;
+			radioPlayer.Enabled = value;
+			checkBoxRecordSamples.Enabled = value;
+		}
 
 		/// <summary>
 		/// 开始游戏
@@ -158,11 +165,10 @@ namespace TicTacToe.GameUI
 			isGame = true;
 			labelOutMessage.Text = Tag.start;
 			//设置游戏修改组件不可用
-			radioAi.Enabled = false;
-			radioDoubleAi.Enabled = false;
-			radioPlayer.Enabled = false;
+			SetControlState(false);
 			//初始化游戏逻辑数据
 			Game.StartGame();
+			Game.SetDQN(checkBoxRecordSamples.Checked);//设置是否保存样本
 			//ai就开始下棋
 			if (Game.IsAi()) DropAiPiece();
 		}

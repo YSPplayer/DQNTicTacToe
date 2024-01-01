@@ -66,6 +66,7 @@
     <Compile Include="CustomControl\CPictureBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Data\DataManage.cs" />
     <Compile Include="DQN\Raw.cs" />
     <Compile Include="DQN\TrainManage.cs" />
     <Compile Include="Enum\EnumManage.cs" />
@@ -114,6 +115,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\black.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="SampleData\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

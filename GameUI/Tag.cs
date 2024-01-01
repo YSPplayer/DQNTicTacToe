@@ -7,6 +7,7 @@ namespace TicTacToe.GameUI
 {
 	static class Tag
 	{
+		//最大索引值
 		public const string noStart = "游戏未开始。";
 		public const string start = "游戏已开始。";
 		public const string winWhite = "游戏结束！白棋胜！";

@@ -38,6 +38,7 @@ namespace TicTacToe
 			this.labelTurnNumber = new System.Windows.Forms.Label();
 			this.radioDoubleAi = new System.Windows.Forms.RadioButton();
 			this.buttonReset = new System.Windows.Forms.Button();
+			this.checkBoxRecordSamples = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// buttonStart
@@ -132,12 +133,23 @@ namespace TicTacToe
 			this.buttonReset.UseVisualStyleBackColor = true;
 			this.buttonReset.Click += new System.EventHandler(this.buttonReset_Click);
 			// 
+			// checkBoxRecordSamples
+			// 
+			this.checkBoxRecordSamples.AutoSize = true;
+			this.checkBoxRecordSamples.Location = new System.Drawing.Point(578, 45);
+			this.checkBoxRecordSamples.Name = "checkBoxRecordSamples";
+			this.checkBoxRecordSamples.Size = new System.Drawing.Size(72, 16);
+			this.checkBoxRecordSamples.TabIndex = 10;
+			this.checkBoxRecordSamples.Text = "记录样本";
+			this.checkBoxRecordSamples.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ActiveCaption;
 			this.ClientSize = new System.Drawing.Size(784, 761);
+			this.Controls.Add(this.checkBoxRecordSamples);
 			this.Controls.Add(this.buttonReset);
 			this.Controls.Add(this.radioDoubleAi);
 			this.Controls.Add(this.labelTurnNumber);
@@ -166,6 +178,7 @@ namespace TicTacToe
 		private System.Windows.Forms.Label labelTurnNumber;
 		private System.Windows.Forms.RadioButton radioDoubleAi;
 		private System.Windows.Forms.Button buttonReset;
+		private System.Windows.Forms.CheckBox checkBoxRecordSamples;
 	}
 }
 

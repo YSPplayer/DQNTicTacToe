@@ -26,7 +26,7 @@
 		Black,//白旗
 		All,//和局
 	}
-	public struct Location
+	public class Location
 	{
 		//x表示所在行,y表示所在列
 		public int x;

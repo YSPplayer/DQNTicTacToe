@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using TicTacToe.Enum;
 using TicTacToe.DQN;
-using System.Windows.Forms;
+using TicTacToe.Data;
+//using System.Windows.Forms;
 namespace TicTacToe.GameCore
 {
 	static class Game
@@ -23,12 +24,20 @@ namespace TicTacToe.GameCore
 		private static Random random;
 		//方便取随机数的x,y坐标数组
 		private static List<Location> locations;
+
+		//是否需要保存样本
+		private static bool DQN;
 		static Game() 
 		{
 			locations = new List<Location>();
 			gameSquares = new int[MAX, MAX];
 			random = new Random();
 			ClearGame();
+		}
+
+		public static void SetDQN(bool value)
+		{
+			DQN = value;
 		}
 
 		/// <summary>
@@ -113,21 +122,6 @@ namespace TicTacToe.GameCore
 			ClearGameSquares();
 			TrainManage.Clear();
 		}
-		/// <summary>
-		/// 拷贝当前的环境
-		/// </summary>
-		private static void CopyS(int[,] s)
-		{
-			int rows = gameSquares.GetLength(0);
-			int cols = gameSquares.GetLength(1);
-			for (int i = 0; i < rows; i++)
-			{
-				for (int j = 0; j < cols; j++)
-				{
-					s[i, j] = gameSquares[i, j];
-				}
-			}
-		}
 
 		/// <summary>
 		/// 重置我们的游戏界面
@@ -149,6 +143,19 @@ namespace TicTacToe.GameCore
 		}
 
 		/// <summary>
+		/// 保存我们的样本数据
+		/// </summary>
+		private static void SaveSampleData(Player player)
+		{
+			if (!DQN) return;
+			int[,] s1 = new int[MAX, MAX];
+			Location dropLocation = new Location(-10,-10);
+			int reward = 0;
+			TrainManage.SetSampleParameters(player, s1, out dropLocation, out reward);
+			DataManage.SavaData(s1, dropLocation, reward);
+		}
+
+		/// <summary>
 		/// 如果有棋子返回true，否则返回false
 		/// </summary>
 		/// <param name="x"></param>
@@ -166,13 +173,10 @@ namespace TicTacToe.GameCore
 		public static void DropPiece(Player player, Location location)
 		{
 			//记录落子前的环境s
-			CopyS(TrainManage.s);
+			TrainManage.SetCurrentParameters(location,player,gameSquares);
 			gameSquares[location.x, location.y]  = player == Player.White ? 1 : -1;
-			//记录落子的行为action
-			TrainManage.dropLocation = new Location(location.x, location.y);
-			TrainManage.player = player;
 			//记录落子后的环境s1
-			CopyS(TrainManage.s1);
+			TrainManage.SetEndParameters(gameSquares);
 			//落子后这个位置坐标就不能用了，同时移除掉对应的坐标
 			RemoveLocation(location);
 		}
@@ -202,23 +206,26 @@ namespace TicTacToe.GameCore
 			if (!win)
 			{
 				++turn;
+				TrainManage.turn = turn;
 				//如果没有空的位置，和局
 				if (turn >= MAX * MAX) 
 				{
+
+
 					//在这个地方获取奖励函数
-					//TrainManage.GetReward(Player.All);
-					MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.All));
+					SaveSampleData(Player.All);
+					//MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.All));
 					return Player.All;
 				}
 				SetNextPlayer();
-				//TrainManage.GetReward(Player.None);
-				MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.None));
+				SaveSampleData(Player.None);
+				//MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(Player.None));
 				return Player.None;
 			}
 			else
 			{
-				//TrainManage.GetReward(currentPlayer);
-				MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(currentPlayer));
+				SaveSampleData(currentPlayer);
+				//MessageBox.Show("当前玩家" + TrainManage.player + "的奖励:" + TrainManage.GetReward(currentPlayer));
 				return currentPlayer;
 			}
 		}

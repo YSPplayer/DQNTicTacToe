@@ -11,22 +11,69 @@ namespace TicTacToe.DQN
 	/// </summary>
 	class TrainManage
 	{
-		public static int[,] s;
-		public static int[,] s1;
-		public static Location dropLocation;
-		public static Player player;
+		private const int MAX = 6;
+		private static int[,] s;
+		private static int[,] s1;
+		private static Location dropLocation;
+		private static Player player;
+		public static int turn;
 		static TrainManage()
 		{
 			Clear();
+		}
+
+		/// <summary>
+		/// 拷贝当前的环境,s1的环境拷贝给s
+		/// </summary>
+		private static void CopyS(int[,] s,int[,] s1)
+		{
+			int rows = s1.GetLength(0);
+			int cols = s1.GetLength(1);
+			for (int i = 0; i < rows; i++)
+			{
+				for (int j = 0; j < cols; j++)
+				{
+					s[i, j] = s1[i, j];
+				}
+			}
+		}
+
+		/// <summary>
+		/// 设置当前获取奖励函数需要的环境参数 
+		/// </summary>
+		public static void SetCurrentParameters(Location location,Player currentPlayer,int[,] gameSquares)
+		{
+			dropLocation = new Location(location.x, location.y);
+			player = currentPlayer;
+			CopyS(s, gameSquares);
+		}
+		public static void SetEndParameters(int[,] gameSquares)
+		{
+			CopyS(s1, gameSquares);
 		}
 
 		public static void Clear()
 		{
 			player = Player.None;
 			dropLocation = new Location(-10, -10);
-			s = new int[6, 6];
-			s1 = new int[6, 6];
+			s = new int[MAX, MAX];
+			s1 = new int[MAX, MAX];
+			turn = 0;
 		}
+
+		/// <summary>
+		/// 设置DQN算法训练模型需要的参数 环境，行动，立即奖励r
+		/// </summary>
+		/// <param name="s1"></param>
+		/// <param name="dropLocation"></param>
+		/// <param name=""></param>
+		public static void SetSampleParameters(Player winPlayer,int[,] outs,out Location outDropLocation,out int outValue)
+		{
+			CopyS(outs, s1);
+			outDropLocation = new Location(dropLocation.x,dropLocation.y);
+			outValue = GetReward(winPlayer);
+		}
+
 		/*
 		   自己的回报一定要比对方对我们威胁小
 		   之前的堵塞，比如说棋子的2端被堵塞，不需要重复计算，因为无法改变这个事实
@@ -40,7 +87,7 @@ namespace TicTacToe.DQN
 		/// 奖励函数，s表示未下之前的游戏状态，s1表示下过之后的游戏状态,player表示当前的旗手,winPlayer表示获胜的玩家
 		/// </summary> 
 		/// <returns></returns>
-		public static int GetReward(Player winPlayer)
+		private static int GetReward(Player winPlayer)
 		{
 			if (winPlayer != Player.None)
 			{
@@ -59,8 +106,17 @@ namespace TicTacToe.DQN
 				reward += GetRawsReward(3,iplayer, dropLocation,s, s1);
 				//二行奖励
 				reward += GetRawsReward(2, iplayer, dropLocation, s, s1);
+				reward += GetRandomReward(reward,iplayer);
 				return reward;
 			}
+		}
+
+		private static int GetRandomReward(int reward,int iplayer)
+		{
+			//如果奖励为0就是说明我们是单独落子，没有走上面的函数，默认扣1回报
+			if (reward != 0) return 0;
+			if ((iplayer == 1 && turn > 2) || (iplayer == -1 && turn > 3)) return -1;
+			return 0;
 		}
 
 		/// <summary>
@@ -116,20 +172,21 @@ namespace TicTacToe.DQN
 				//获取落子后对方棋子的阻塞状态
 				//如果落子后对方没有阻塞，回报 -5，有1处格挡，回报-4，有2处格挡，回报+6
 				//格挡需要算最新的差值，
-				int eblock0 = current_block0 - before_block0;
-				int eblock1 = current_block1 - before_block1;
-				int eblock2 = current_block2 - before_block2;
-				if (before_block0 == current_block0) 
-				int eblockvalue = eblock0 * (-5) + eblock1 * (-4) + eblock2 * (6);
-				reward += eblockvalue;
+				//对方棋子未堵塞，说明我们没有加以限制
+				if (current_block0 > 0) reward += current_block0 * (-5);
+				//对方棋子只阻塞一个
+				if (current_block1 > 0) reward += current_block1 * (-4);
+				if(current_block2 - before_block2 > 0) reward += (current_block2 - before_block2) * (6);
 			}
 			else if (type == 2)
 			{
 				//两行
-				//获取当前状态s下所有2个棋子连续分布的集合，这个集合要过滤掉3行的
-				List<TwoInARow> beforeTwoInARows = TwoInARow.CheckForTwoInARow(s).Where(row => row != null && !row.IsOverTwoInARow(s)).ToList();
+				//不过滤三行
+				//获取当前状态s下所有2个棋子连续分布的集合
+				//.Where(row => row != null && !row.IsOverTwoInARow(s)).ToList()
+				List<TwoInARow> beforeTwoInARows = TwoInARow.CheckForTwoInARow(s);
 				//获取行动之后状态s1下所有2个棋子连续分布的集合
-				List<TwoInARow> currentTwoInARows = TwoInARow.CheckForTwoInARow(s1).Where(row => row != null && !row.IsOverTwoInARow(s1)).ToList();
+				List<TwoInARow> currentTwoInARows = TwoInARow.CheckForTwoInARow(s1);
 				//落子之后我们游戏环境中新增的row
 				List<TwoInARow> changeTwoInARows = TwoInARow.UnionRows(currentTwoInARows, beforeTwoInARows);
 				if (changeTwoInARows.Count > 0)
@@ -167,14 +224,13 @@ namespace TicTacToe.DQN
 				//获取当前堵塞的连续棋子
 				TwoInARow.SetBlockedCount(s1, enemyCurrentTwoInARows, out current_block0, out current_block1, out current_block2);
 				//获取落子后对方棋子的阻塞状态
-				//如果落子后对方没有阻塞，回报 -4，有1处格挡，回报-2，有2处格挡，回报+4
-				int eblock0 = current_block0 - before_block0;
-				int eblock1 = current_block1 - before_block1;
-				int eblock2 = current_block2 - before_block2;
-				int eblockvalue = eblock0 * (-4) + eblock1 * (-2) + eblock2 * (4);
-				reward += eblockvalue;
-				//检查一个棋子的时候，即检查当前落子位置是否包含在2个棋子中，每包含一次加1分。
-				int chainRowCount = enemyCurrentTwoInARows.Count(row => row != null && row.IsContainLocation(dropLocation));
+				//如果落子后对方没有阻塞，回报 -3，有1处格挡，回报-1，有2处格挡，回报+3
+				if (current_block0 > 0) reward += current_block0 * (-3);
+				//这个用来判断，如果是历史遗留问题才增加负向回报，否则我们刚刚下过了就默认回报0
+				if (current_block1 > 0 && current_block1 == before_block1) reward += current_block1 * (-1);
+				if (current_block2 - before_block2 > 0) reward += (current_block2 - before_block2) * (3);
+				//检查一个棋子的时候，即检查当前落子位置是否包含在2个棋子中，每包含一次加1分。【包括3个子连续】
+				int chainRowCount = currentTwoInARows.Count(row => row != null && row.IsContainLocation(dropLocation));
 				if (chainRowCount < 0) chainRowCount = 0;
 				reward += chainRowCount;
 			}
