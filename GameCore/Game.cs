@@ -27,6 +27,8 @@ namespace TicTacToe.GameCore
 
 		//是否需要保存样本
 		private static bool DQN;
+		//是否加载算法ai
+		private static bool DQNAi;
 		static Game() 
 		{
 			locations = new List<Location>();
@@ -35,9 +37,10 @@ namespace TicTacToe.GameCore
 			ClearGame();
 		}
 
-		public static void SetDQN(bool value)
+		public static void SetDQN(bool value,bool ai)
 		{
 			DQN = value;
+			DQNAi = ai;
 		}
 
 		/// <summary>
@@ -119,6 +122,7 @@ namespace TicTacToe.GameCore
 			turn = 0;
 			currentPlayer = Player.None;
 			isAi = false;
+			DQNAi = false;
 			ClearGameSquares();
 			TrainManage.Clear();
 		}
@@ -187,10 +191,19 @@ namespace TicTacToe.GameCore
 		/// </summary>
 		public static Location DropAiPiece() 
 		{
-			int index = random.Next(0, locations.Count);
-			if (index >= locations.Count || index < 0) index = 0;
-			//获取到随机索引值
-			Location loc = locations[index];
+			Location loc = null;
+			if (!DQNAi)
+			{
+				//获取到随机行动
+				int index = random.Next(0, locations.Count);
+				if (index >= locations.Count || index < 0) index = 0;
+				loc = locations[index];
+			}
+			else
+			{
+				//获取到算法行动
+				loc = TrainManage.GetDQNLocation(gameSquares, locations);
+			}
 			DropPiece(currentPlayer, loc);
 			//返回我们的位置，因为我们要渲染对应索引的组件
 			return loc;

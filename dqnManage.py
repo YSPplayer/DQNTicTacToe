@@ -61,7 +61,31 @@ class DQNManage:
                 # 单步训练
                 model.fit(state_batch, target_f, epochs=1, verbose=0)
     @staticmethod
-    def start_train(samples):
+    def get_dqn_model_message(model_path):
+        dqn_model = tf.keras.models.load_model(model_path)
+        dqn_model.summary()
+    @staticmethod
+    def continue_training(samples,model_path,epochs):
+        s1_data = np.array([sample.s1 for sample in samples])
+        action_data = np.array([sample.action for sample in samples])
+        value_data = np.array([sample.value for sample in samples])
+        action_count_data = np.array([sample.action_count for sample in samples])
+        end_data = np.array([sample.end for sample in samples])
+        s1_data = np.expand_dims(s1_data, axis=-1)  # 这里要对s1状态增加一个新的维度
+        # 经验池中添加样本
+        replay_buffer = ReplayBuffer()
+        for idx in range(len(s1_data) - 1):
+            replay_buffer.add(s1_data[idx], action_data[idx], value_data[idx], s1_data[idx + 1],
+                              action_count_data[idx], end_data[idx])
+        # 加载已有模型
+        dqn_model = tf.keras.models.load_model(model_path)
+        # 继续训练
+        DQNManage.train_dqn(dqn_model, replay_buffer, batch_size=32, epochs=epochs)
+        # 保存模型
+        dqn_model.save(model_path)
+
+    @staticmethod
+    def start_train(samples,model_path,epochs):
         s1_data = np.array([sample.s1 for sample in samples])
         action_data = np.array([sample.action for sample in samples])
         value_data = np.array([sample.value for sample in samples])
@@ -79,9 +103,9 @@ class DQNManage:
         action_size = 36  # 假设最多有36种可能的动作
         dqn_model = DQNManage.build_dqn(state_shape, action_size)
         #epochs 训练次数 batch_size 是指在训练过程中一次性处理的数据样本数
-        DQNManage.train_dqn(dqn_model, replay_buffer, batch_size=32, epochs=5)
+        DQNManage.train_dqn(dqn_model, replay_buffer, batch_size=32, epochs=epochs)
         # 保存模型
-        dqn_model.save('dqn_model.h5')
+        dqn_model.save(model_path)
 #ReplayBuffer 类：用于存储和重放以前的经验（状态、动作、奖励等）。
 #这对于打破样本之间的相关性和避免过拟合至关重要。
 class ReplayBuffer:

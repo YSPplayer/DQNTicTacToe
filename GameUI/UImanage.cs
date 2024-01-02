@@ -19,6 +19,7 @@ namespace TicTacToe.GameUI
 		public static RadioButton radioDoubleAi;
 		public static RadioButton radioAi;
 		public static CheckBox checkBoxRecordSamples;
+		public static CheckBox checkBoxAlgorithmAI;
 		//游戏是否开始
 		private static bool isGame;
 		static UIManage()
@@ -154,6 +155,7 @@ namespace TicTacToe.GameUI
 			radioDoubleAi.Enabled = value;
 			radioPlayer.Enabled = value;
 			checkBoxRecordSamples.Enabled = value;
+			checkBoxAlgorithmAI.Enabled = value;
 		}
 
 		/// <summary>
@@ -168,7 +170,7 @@ namespace TicTacToe.GameUI
 			SetControlState(false);
 			//初始化游戏逻辑数据
 			Game.StartGame();
-			Game.SetDQN(checkBoxRecordSamples.Checked);//设置是否保存样本
+			Game.SetDQN(checkBoxRecordSamples.Checked,checkBoxAlgorithmAI.Checked);//设置是否保存样本和是否开启算法ai
 			//ai就开始下棋
 			if (Game.IsAi()) DropAiPiece();
 		}

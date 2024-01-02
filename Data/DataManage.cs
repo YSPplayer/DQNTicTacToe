@@ -35,7 +35,7 @@ namespace TicTacToe.Data
         public static void Start()
         {
             //开启db异步线程
-            Task task = Task.Factory.StartNew(() => SQLiteStart());
+            Task.Factory.StartNew(() => SQLiteStart());
         }
 
         /// <summary>

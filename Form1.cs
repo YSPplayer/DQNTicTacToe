@@ -50,6 +50,7 @@ namespace TicTacToe
 		   UIManage.radioDoubleAi = radioDoubleAi;
 		   UIManage.radioAi = radioAi;
 		   UIManage.checkBoxRecordSamples = checkBoxRecordSamples;
+		   UIManage.checkBoxAlgorithmAI = checkBoxAlgorithmAI;
 		}
 		/// <summary>
 		/// 初始化游戏盘

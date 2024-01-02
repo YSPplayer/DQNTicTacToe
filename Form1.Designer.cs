@@ -39,6 +39,7 @@ namespace TicTacToe
 			this.radioDoubleAi = new System.Windows.Forms.RadioButton();
 			this.buttonReset = new System.Windows.Forms.Button();
 			this.checkBoxRecordSamples = new System.Windows.Forms.CheckBox();
+			this.checkBoxAlgorithmAI = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			// 
 			// buttonStart
@@ -143,12 +144,23 @@ namespace TicTacToe
 			this.checkBoxRecordSamples.Text = "记录样本";
 			this.checkBoxRecordSamples.UseVisualStyleBackColor = true;
 			// 
+			// checkBoxAlgorithmAI
+			// 
+			this.checkBoxAlgorithmAI.AutoSize = true;
+			this.checkBoxAlgorithmAI.Location = new System.Drawing.Point(656, 45);
+			this.checkBoxAlgorithmAI.Name = "checkBoxAlgorithmAI";
+			this.checkBoxAlgorithmAI.Size = new System.Drawing.Size(84, 16);
+			this.checkBoxAlgorithmAI.TabIndex = 11;
+			this.checkBoxAlgorithmAI.Text = "开启算法ai";
+			this.checkBoxAlgorithmAI.UseVisualStyleBackColor = true;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.BackColor = System.Drawing.SystemColors.ActiveCaption;
 			this.ClientSize = new System.Drawing.Size(784, 761);
+			this.Controls.Add(this.checkBoxAlgorithmAI);
 			this.Controls.Add(this.checkBoxRecordSamples);
 			this.Controls.Add(this.buttonReset);
 			this.Controls.Add(this.radioDoubleAi);
@@ -179,6 +191,7 @@ namespace TicTacToe
 		private System.Windows.Forms.RadioButton radioDoubleAi;
 		private System.Windows.Forms.Button buttonReset;
 		private System.Windows.Forms.CheckBox checkBoxRecordSamples;
+		private System.Windows.Forms.CheckBox checkBoxAlgorithmAI;
 	}
 }
 

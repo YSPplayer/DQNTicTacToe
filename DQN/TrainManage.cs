@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TicTacToe.Enum;
+using TicTacToe.Data;
 
 namespace TicTacToe.DQN
 {
@@ -22,6 +23,8 @@ namespace TicTacToe.DQN
 		{
 			Clear();
 		}
+
+
 
 		/// <summary>
 		/// 拷贝当前的环境,s1的环境拷贝给s
@@ -62,6 +65,18 @@ namespace TicTacToe.DQN
 			s1 = new int[MAX, MAX];
 			turn = 0;
 			actionCount = 0;
+		}
+
+		public static Location GetDQNLocation(int[,]s,List<Location> locations)
+		{
+			List<int[]> actions = new List<int[]>();
+			for (int i = 0; i < locations.Count; i++)
+			{
+				Location location = locations[i];
+				actions.Add(new int[] { location .x, location.y});
+			}
+			int[] action = ScriptManage.RunPythonScript(s, actions);
+			return new Location(action[0], action[1]);
 		}
 
 		/// <summary>
