@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using TicTacToe.GameUI;
 using TicTacToe.CustomControl;
 using TicTacToe.Data;
+using TicTacToe.DQN;
 
 namespace TicTacToe
 {
@@ -19,6 +20,17 @@ namespace TicTacToe
 			InitializeComponent();
 			InitializeGameUI();
 			InitializeSQLite();
+			InitializeAiServer();//初始化模型ai服务器
+			FormClosing += new FormClosingEventHandler(FromClosing);
+		}
+
+		void FromClosing(object sender, FormClosingEventArgs e)
+		{
+			ScriptManage.Close();
+		}
+		void InitializeAiServer()
+		{
+			ScriptManage.StartModelServer();
 		}
 
 		/// <summary>

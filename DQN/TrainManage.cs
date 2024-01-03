@@ -75,7 +75,8 @@ namespace TicTacToe.DQN
 				Location location = locations[i];
 				actions.Add(new int[] { location .x, location.y});
 			}
-			int[] action = ScriptManage.RunPythonScript(s, actions);
+			//int[] action = ScriptManage.RunPythonScript(s, actions);
+			int[] action = ScriptManage.DropPiece(s, actions);
 			return new Location(action[0], action[1]);
 		}
 
